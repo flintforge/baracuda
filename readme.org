@@ -1,6 +1,6 @@
 
 * BaraCuda : a CUDA kernel compositor
-/yes, with one "C"/
+/yes, with one C/
 
 baracuda is a POC/WIP of a kernel composition utility, meant to break down
 the writing of cuda kernel into smaller pieces and examinate the
