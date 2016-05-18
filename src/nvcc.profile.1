@@ -1,0 +1,30 @@
+#
+# nvcc and nvcc.profile are in the bin directory of the
+# cuda installation tree. Hence, this installation tree
+# is ‘one up’:
+#
+TOP = $(_HERE_)/..
+#
+# Define the cuda include directories:
+#
+INCLUDES += -I$(TOP)/include -I$(TOP)/include/cudart ${_SPACE_}
+#
+# Extend dll search path to find cudart.dll and cuda.dll
+# and add these two libraries to the link line
+#
+PATH += $(TOP)/lib;
+LIBRARIES =+ ${_SPACE_} -L$(TOP)/lib -lcuda -lcudart
+#
+# Extend the executable search path to find the
+# cuda internal tools:
+#
+PATH += $(TOP)/open64/bin:$(TOP)/bin:
+#
+# Location of Microsoft Visual Studio compiler
+#
+# compiler-bindir = c:/mvs/bin
+#
+# No special optimization flags for device code compilation:
+#
+PTXAS_FLAGS +=
+

@@ -1,0 +1,128 @@
+#-------------------------------------------------
+#
+#  Baracuda 0.2 
+#
+#-------------------------------------------------
+
+QT += core gui opengl
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+TARGET = baracuda
+TEMPLATE = app
+
+VPATH += ./src
+SOURCES =\
+    cuda_drvapi_dynlink.c \
+    main.cpp\
+    mainwindow.cpp \
+    tiTimer.cpp \
+    op.cpp \
+    opchain.cpp \
+    opcomposer.cpp \
+    gpu.cpp \
+    cudacompil.cpp \
+    brick.cpp \
+    moduleslistmodel.cpp \
+    gpumodule.cpp \
+    modulelist.cpp \
+    modulelistitem.cpp \
+    cuglpixelbuffer.cpp \
+    glrendererwidget.cpp \
+    timelineview.cpp \
+    histogram.cpp \
+    textedit.cpp \
+    glrenderer.cpp \
+    highlighter.cpp
+
+#SOURCES = src/*.cpp src/*.c
+
+OTHER_FILES =
+
+HEADERS  += mainwindow.h \
+#    simplePBO.h \
+    helper_string.h \
+    helper_cuda_drvapi.h \
+    cuda_drvapi_dynlink_cuda.h \
+    tiTimer.h \
+    cuda_drvapi_dynlink_gl.h \
+    cuda_drvapi_dynlink.h \
+    op.h \
+    bartypes.h \
+    opchain.h \
+    opcomposer.h \
+    gpu.h \
+    timedtest_ptxdump.h \
+    cudacompil.h \
+    brick.h \
+    moduleslistmodel.h \
+    gpumodule.h \
+    modulelist.h \
+    modulelistitem.h \
+    compilation.h \
+    cuglpixelbuffer.h \
+    glrendererwidget.h \
+    timelineview.h \
+    histogram.h \
+    textedit.h \
+    glrenderer.h \
+    highlighter.h
+
+FORMS    += mainwindow.ui \
+    about.ui
+
+BUILDX = $$system(./buildnum.sh)
+message("BUILD NUMBER:")
+message($$BUILDX)
+DEFINES += _BUILDNUM_=$$BUILDX
+
+
+EVERYTHING = $$SOURCES $$HEADERS
+message("Project $$TARGET contains the following files:")
+message($$EVERYTHING)
+
+
+CUDA_SOURCES = $$OTHER_FILES
+
+# Path to cuda SDK install in case its not a standad=rd install
+
+#CUDA_SDK = /opt/cuda/samples # path to your gpu sdk
+#CUDA_DIR = /opt/cuda
+# include paths
+# INCLUDEPATH += $$CUDA_DIR/include
+# INCLUDEPATH += $$CUDA_SDK/common/inc
+
+CUDA_ARCH = sm_11
+
+# nvcc flags (ptxas option verbose is always useful)
+debug:NVCCFLAGS = -g -G #-pg #-keep --keep-dir=obj
+release:NVCCFLAGS = -O
+NVCCFLAGS += --ptxas-options=-v
+
+# lib dirs
+QMAKE_LIBDIR += $$CUDA_DIR/lib
+QMAKE_LIBDIR += $$CUDA_SDK/lib
+
+LIBS += -lcudart -ldl #-lGLEW
+# join the includes in a line
+CUDA_INC = $$join(INCLUDEPATH,' -I','-I',' ')
+
+cuda.input = CUDA_SOURCES
+cuda.output = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cuda.o
+cuda.commands = $$CUDA_DIR/bin/nvcc -arch=$$CUDA_ARCH $$NVCCFLAGS $$CUDA_INC $$LIBS -c ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+cuda.dependency_type = TYPE_C
+cuda.depend_command = $$CUDA_DIR/bin/nvcc -M $$CUDA_INC $$NVCCFLAGS   ${QMAKE_FILE_NAME}
+# Tell Qt that we want add more stuff to the Makefile
+QMAKE_EXTRA_COMPILERS += cuda
+
+unix:!macx: LIBS += -lcudart -L/opt/cuda/lib
+
+RESOURCES += baracuda.qrc
+
+release: DESTDIR = build/release
+debug:   DESTDIR = build/debug
+
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.ui
+
+

@@ -1,0 +1,57 @@
+
+* BaraCuda : a CUDA kernel compositor
+/yes, with one "C"/
+
+baracuda is a POC/WIP of a kernel composition utility, meant to break down
+the writing of cuda kernel into smaller pieces and examinate the
+rendering result of the combinations in realtime.
+
+[[./screencap.jpg]]
+
+
+** GLSL sauce
+A GLSL wrapper is included : with a few modifications, 
+a GLSL code will compile. Not all, as the wrapper is fairly incomplete.
+
+Don't expect performances : this does not generate machine code, but
+add extra structures, meant only so that standard functions, swizzles 
+operations and vectors association/composition work.
+
+It's written with QT5 and runs with cuda v4 to v7.
+
+** Build
+=$ qmake && make=
+note that if you =qmake -project=, this will overwrite =baracuda.pro=
+
+** cuda setup
+=lspci -v | grep -i nvidia=
+If your card is registred as a 3D controller,
+you'll need either to run [[https://wiki.archlinux.org/index.php/bumblebee][bumblebee]],
+or tho turn the GPU as primary device in your BIOS.
+
+check the number id and go to [[http://us.download.nvidia.com/XFree86/Linux-x86_64/352.55/README/supportedchips.html][supportedchips]]
+
+for debian : https://wiki.debian.org/NvidiaGraphicsDrivers
+
+For a fresh start on debian + bumblebee
+bumblebee project page : https://wiki.archlinux.org/index.php/bumblebee
+purge anything related to nvidia an cuda
+=apt-get purge nvidia-* cuda-*=
+install nvidia-driver through the jessie backport
+=sudo apt-get install -t jessie-backports bumblebee-nvidia=
+ran through any errors by digging =/var/log/Xorg.8.log= and =kern.log=
+
+** gcc setup
+take note that gcc-4.7 and up aren't supported with cuda6
+you'll have to install  gcc-4.6 g++-4.6 (or 4.4 with cuda5)
+
+** troubleshoot
+=`CUDA_ERROR_NO_DEVICE (no CUDA-capable devices were detected)`=
+=cuInit returned 100=
+either you're back to start or you forgot to run baracuda
+with `optirun`
+
+If running the rendering in virtual framebuffer, 
+*=libqxcb= will crash when dragging an item from the list to composer*.
+For now, the workaround is to add the item when it's clicked
+

@@ -1,0 +1,47 @@
+
+#include "vecmath.hcu"
+typedef uchar4 rgba8;
+
+// shared mem limit ?
+//_gpu_ __shared__ uint OFFSET;
+//#define _SETOFFSET_ uint OFFSET  _px_+ _py_ * blockDim.x * gridDim.x; \
+
+#define _GLSL_SAUCE_\
+    uint _px_ = threadIdx.x + blockIdx.x * blockDim.x; \
+    uint _py_ = threadIdx.y + blockIdx.y * blockDim.y; \
+    uint OFFSET = _px_+ _py_ * blockDim.x * gridDim.x;\
+    vec2 FragSize = vec2(width,height);\
+    vec2 FragCoord = vec2(_px_,_py_);\
+    vec2 iResolution = vec2(width/(_px_ - width/2.0f ),height/(_py_ - height/2.0f));
+    //vec2 RelCoord = vec2((_px_ - width/2.0f )/ width,(_py_ - height/2.0f)/ height);
+
+#define Output3(pixels, v)\
+    pixels[OFFSET].x = v.x;\
+    pixels[OFFSET].y = v.y;\
+    pixels[OFFSET].z = v.z;\
+    pixels[OFFSET].w = 255;
+
+#define Output4(pixels, v)\
+    pixels[OFFSET].x = v.x;\
+    pixels[OFFSET].y = v.y;\
+    pixels[OFFSET].z = v.z;\
+    pixels[OFFSET].w = v.w;
+
+/*
+shared mem limitation ?
+_gpu_ void operator << (rgba8 * pixels, vec4 v)
+{
+	pixels[OFFSET].x = v.x;
+	pixels[OFFSET].y = v.y;
+	pixels[OFFSET].z = v.z;
+	pixels[OFFSET].w = v.w;
+}
+
+_gpu_ void operator << (rgba8 * pixels, vec3 v)
+{
+	pixels[OFFSET].x = v.x;
+	pixels[OFFSET].y = v.y;
+	pixels[OFFSET].z = v.z;
+	pixels[OFFSET].w = 255;
+}
+*/

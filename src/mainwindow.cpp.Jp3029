@@ -1,0 +1,217 @@
+﻿#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "ui_about.h"
+#include "cudacompil.h"
+
+#include "compilation.h"
+#include "moduleslistmodel.h"
+#include <QMessageBox>
+#include "histogram.h"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    gpu = new GPU();
+    gpu->startup();
+
+    ui = new Ui_Dialog();
+    ui->setupUi(this);
+    ui->renderer->setGPU(gpu);
+
+    aboutDlg = new QDialog(this);
+    about->setupUi(aboutDlg);
+    /**
+     * meant this way,
+     * the renderer2 (an histogram for instance)
+     * would execute an op on the shared pbo, but modifying the pbo itself
+     * if it's not writing on an other devptr segment.
+     * This is the situation in which we want to preserve the input data,
+     * by examining the op signature so it has input and output channels separated
+     */
+
+    /*
+        GLRendererWidget* renderer2 = new GLRendererWidget(ui->splitter,ui->renderer);
+        ui->renderer->setCopyRenderer(renderer2);
+
+        renderer2->setObjectName(QStringLiteral("renderer2"));
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(renderer2->sizePolicy().hasHeightForWidth());
+        renderer2->setSizePolicy(sizePolicy1);
+        renderer2->setMinimumSize(QSize(128, 0));
+        renderer2->setStyleSheet(QStringLiteral("background-color:red"));
+        ui->splitter->addWidget(renderer2);
+
+        CudaCompiler compil;
+        GPUModule * module = compil.createGPUModuleFromFile( "kernels/invert24.cu", gpu );
+        OP * op = new OP(module);
+        renderer2->setOp(op);
+        ui->renderer->setCopyRenderer(renderer2);
+*/
+    Histogram* histogram = new Histogram(ui->splitter,ui->renderer);
+    histogram->init(gpu);
+    histogram->setObjectName(QStringLiteral("Histogram"));
+    QSizePolicy sizePolicy2(QSizePolicy::Maximum, QSizePolicy::Preferred);
+    sizePolicy2.setHorizontalStretch(0);
+    sizePolicy2.setVerticalStretch(0);
+    sizePolicy2.setHeightForWidth(histogram->sizePolicy().hasHeightForWidth());
+    histogram->setSizePolicy(sizePolicy2);
+    histogram->setMinimumSize(QSize(128, 0));
+
+    ui->splitter->addWidget(histogram);
+
+    ui->renderer->setCopyRenderer(histogram);
+
+    ui->opcompositer->composer->setList( ui->moduleListView );
+    ui->opcompositer->setList(ui->moduleListView);
+
+    connect( ui->actionOpenImage, SIGNAL( triggered() ), this, SLOT( openImage() ) );
+    connect( ui->actionLoadKernel, SIGNAL( triggered() ), this, SLOT( loadKernel() ) );
+    connect( ui->actionStop, SIGNAL( triggered() ), this, SLOT( stopRendering() ) );
+    connect( ui->actionAbout, SIGNAL( triggered() ), this, SLOT( showAboutDlg() ) );
+
+    // when selecting a kernel in the list
+    connect(ui->moduleListView, SIGNAL(clicked(QModelIndex)), this, SLOT(selectKernelInList(QModelIndex)));
+    
+    connect( (OpComposer*) ui->opcompositer->scene(),
+             SIGNAL( BrickSelected( Brick *) ),
+             this,
+             SLOT( brickSelected( Brick *) ) );
+    connect( (OpComposer*) ui->opcompositer->scene(),
+             SIGNAL( RenderOp( Brick *) ),
+             this,
+             SLOT( renderOp( Brick *) ) );
+    connect( (OpComposer*) ui->opcompositer->scene(),
+             SIGNAL( Recompile( Brick *) ),
+             this,
+             SLOT( recompileOp( Brick *) ) );
+
+
+    fileDialog = new QFileDialog ( this, "Open a kernel", QDir::currentPath()+"/kernels",
+                               "Cuda kernels [*.cu] (*.cu);;All [*] (*);;");
+    fileDialog->setFileMode(QFileDialog::ExistingFiles);
+    connect(fileDialog, SIGNAL(finished (int)), this, SLOT(kernelSelectionFinished(int)));
+    // test purpose
+    compileKernel("kernels/transcendantalEquations.cu");
+}
+
+
+void MainWindow::selectKernelInList(const QModelIndex & idx) {
+/*
+ * show the source when selecting in the brick in the list
+ **/
+    int row = idx.row();
+    GPUModule * module = ui->moduleListView->getBrick(row)->getOp()->getModule();
+    ui->textEdit->setEditingModule( module );
+    //ui->textEdit->setText( module->getSrc());
+}
+
+
+void MainWindow::brickSelected(Brick * b) {
+/*
+ * show the source when double clicking a brick in the composer
+ **/
+    ui->textEdit->setEditingModule( b->getOp()->getModule() );
+}
+
+void MainWindow::renderOp(Brick * b)
+{
+    ui->renderer->running = true;
+    ui->renderer->setOp( b->getOp() );
+}
+
+void MainWindow::kernelSelectionFinished(int result) {
+    if(result)
+    foreach(String file, fileDialog->selectedFiles()) {
+       ui->statusBar->showMessage("Compiling " + file);
+       Compilation *compil = new Compilation(file,gpu);
+       connect(compil, &Compilation::done, this, &MainWindow::compilationDone);
+       connect(compil, &Compilation::finished, compil, &QObject::deleteLater);
+       compil->start();
+       /// compil will be deleted when compilationDone is received
+    }
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+    delete gpu;
+}
+
+
+
+/*
+void MainWindow::recompileOp(Brick * b)
+{
+   // b->getOp()->
+}*/
+
+void MainWindow::stopRendering()
+{
+    ui->renderer->running = !ui->renderer->running;
+    if(ui->renderer->running)
+        ui->actionStop->setText("stop");
+    else
+        ui->actionStop->setText("start");
+}
+
+void MainWindow::compilationDone( GPUModule * module ) const
+{
+    if(module==NULL) {
+        ui->statusBar->showMessage("module compilation error");
+    }
+    else {
+        ui->statusBar->showMessage("Kernel compiled");
+        OP * op = new OP(module);
+        Brick * b = new Brick(op);
+        ui->moduleListView->addBrick(b);
+    }
+    delete (QObject::sender()); // destroy the compil object
+}
+
+
+void MainWindow::compileKernel( const QString & filename ) const
+{
+    ui->statusBar->showMessage("Compiling kernel...");
+    qDebug() << filename <<"... \n";
+    CudaCompiler compil;
+    GPUModule * module = compil.createGPUModuleFromFile( filename, gpu );
+
+    if(module==NULL) {
+        // output the log buffer please
+        ui->statusBar->showMessage("Kernel compilation failed");
+        QMessageBox::critical(NULL, "Error","Module compilation failed "+filename,
+                              QMessageBox::Ok );
+                              //Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+    }
+    else {
+        OP * op = new OP( module );
+        Brick * brick = new Brick( op );
+        ui->statusBar->showMessage("Kernel compilation done");
+        // switch to a list of module to a list of bricks
+        ui->moduleListView->addBrick(brick);
+        ui->renderer->setOp(brick->getOp());
+    }
+}
+
+
+// status please
+void MainWindow::loadKernel()
+{
+    //ui->renderer->pbo()->loadKernel("yellow.ptx");
+    if (! CudaCompiler::NVCC_Ready) {
+        QMessageBox::critical(NULL, "Error","Compiler not found",
+                              QMessageBox::Ok);
+                              //Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+        return;
+    } else {
+        fileDialog->exec();
+    }
+}
+
+
+void MainWindow::showAbout() {
+
+}

@@ -1,0 +1,22 @@
+/**
+take an other start of vecmath
+*/
+#include "vecmath2.hcu"
+typedef uchar4 rgba8;
+
+#define _GLSL_SAUCE_\
+    uint _px_ = threadIdx.x + blockIdx.x * blockDim.x; \
+    uint _py_ = threadIdx.y + blockIdx.y * blockDim.y; \
+    uint OFFSET = _px_+ _py_ * blockDim.x * gridDim.x;
+
+#define Output3(pixels, v)\
+    pixels[OFFSET].x = v.x;\
+    pixels[OFFSET].y = v.y;\
+    pixels[OFFSET].z = v.z;\
+    pixels[OFFSET].w = 255;
+
+#define Output4(pixels, v)\
+    pixels[OFFSET].x = v.x;\
+    pixels[OFFSET].y = v.y;\
+    pixels[OFFSET].z = v.z;\
+    pixels[OFFSET].w = v.w;

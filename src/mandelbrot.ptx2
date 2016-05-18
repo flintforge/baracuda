@@ -1,0 +1,803 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /opt/cuda/open64/lib//be
+	// nvopencc 4.1 built on 2013-07-17
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000317a_00000000-9_mandelbrot.cpp3.i (/tmp/ccBI#.JZQDTg)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:32
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000317a_00000000-8_mandelbrot.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/i686-linux-gnu/4.4.7/include/stddef.h"
+	.file	4	"/opt/cuda/bin/..//include/crt/device_runtime.h"
+	.file	5	"/opt/cuda/bin/..//include/host_defines.h"
+	.file	6	"/opt/cuda/bin/..//include/builtin_types.h"
+	.file	7	"/opt/cuda/bin/..//include/device_types.h"
+	.file	8	"/opt/cuda/bin/..//include/driver_types.h"
+	.file	9	"/opt/cuda/bin/..//include/surface_types.h"
+	.file	10	"/opt/cuda/bin/..//include/texture_types.h"
+	.file	11	"/opt/cuda/bin/..//include/vector_types.h"
+	.file	12	"/opt/cuda/bin/..//include/device_launch_parameters.h"
+	.file	13	"/opt/cuda/bin/..//include/crt/storage_class.h"
+	.file	14	"mandelbrot.cu"
+	.file	15	"/opt/cuda/bin/..//include/common_functions.h"
+	.file	16	"/opt/cuda/bin/..//include/math_functions.h"
+	.file	17	"/opt/cuda/bin/..//include/math_constants.h"
+	.file	18	"/opt/cuda/bin/..//include/device_functions.h"
+	.file	19	"/opt/cuda/bin/..//include/sm_11_atomic_functions.h"
+	.file	20	"/opt/cuda/bin/..//include/sm_12_atomic_functions.h"
+	.file	21	"/opt/cuda/bin/..//include/sm_13_double_functions.h"
+	.file	22	"/opt/cuda/bin/..//include/sm_20_atomic_functions.h"
+	.file	23	"/opt/cuda/bin/..//include/sm_32_atomic_functions.h"
+	.file	24	"/opt/cuda/bin/..//include/sm_35_atomic_functions.h"
+	.file	25	"/opt/cuda/bin/..//include/sm_20_intrinsics.h"
+	.file	26	"/opt/cuda/bin/..//include/sm_30_intrinsics.h"
+	.file	27	"/opt/cuda/bin/..//include/sm_32_intrinsics.h"
+	.file	28	"/opt/cuda/bin/..//include/sm_35_intrinsics.h"
+	.file	29	"/opt/cuda/bin/..//include/surface_functions.h"
+	.file	30	"/opt/cuda/bin/..//include/texture_fetch_functions.h"
+	.file	31	"/opt/cuda/bin/..//include/texture_indirect_functions.h"
+	.file	32	"/opt/cuda/bin/..//include/surface_indirect_functions.h"
+	.file	33	"/opt/cuda/bin/..//include/math_functions_dbl_ptx1.h"
+
+	.const .align 4 .b8 __cudart_i2opi_f[24] = {65,144,67,60,153,149,98,219,192,221,52,245,209,87,39,252,41,21,68,78,110,131,249,162};
+
+	.entry _Z10mandelbrotP6uchar4jjii (
+		.param .u32 __cudaparm__Z10mandelbrotP6uchar4jjii_ptr,
+		.param .u32 __cudaparm__Z10mandelbrotP6uchar4jjii_width,
+		.param .u32 __cudaparm__Z10mandelbrotP6uchar4jjii_height,
+		.param .s32 __cudaparm__Z10mandelbrotP6uchar4jjii_iter,
+		.param .s32 __cudaparm__Z10mandelbrotP6uchar4jjii_time)
+	{
+	.reg .u16 %rh<4>;
+	.reg .u32 %r<214>;
+	.reg .f32 %f<231>;
+	.reg .pred %p<33>;
+	.local .align 4 .b8 __cuda___cuda_result_1620[28];
+	.local .align 4 .b8 __cuda___cuda_result_5248[28];
+	.loc	14	6	0
+$LDWbegin__Z10mandelbrotP6uchar4jjii:
+	.loc	14	17	0
+	cvt.u32.u16 	%r1, %ntid.x;
+	cvt.u32.u16 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	ld.param.u32 	%r4, [__cudaparm__Z10mandelbrotP6uchar4jjii_width];
+	cvt.rn.f32.u32 	%f1, %r4;
+	cvt.u32.u16 	%r5, %tid.x;
+	add.u32 	%r6, %r5, %r3;
+	cvt.rn.f32.u32 	%f2, %r6;
+	div.full.f32 	%f3, %f2, %f1;
+	mov.f32 	%f4, 0fbf000000;     	// -0.5
+	add.f32 	%f5, %f3, %f4;
+	mov.f32 	%f6, 0f40400000;     	// 3
+	mul.f32 	%f7, %f5, %f6;
+	mov.f32 	%f8, %f7;
+	.loc	14	18	0
+	mov.u16 	%rh1, %ctaid.y;
+	mov.u16 	%rh2, %ntid.y;
+	mul.wide.u16 	%r7, %rh1, %rh2;
+	ld.param.u32 	%r8, [__cudaparm__Z10mandelbrotP6uchar4jjii_height];
+	cvt.rn.f32.u32 	%f9, %r8;
+	cvt.u32.u16 	%r9, %tid.y;
+	add.u32 	%r10, %r9, %r7;
+	cvt.rn.f32.u32 	%f10, %r10;
+	div.full.f32 	%f11, %f10, %f9;
+	mov.f32 	%f12, 0fbf000000;    	// -0.5
+	add.f32 	%f13, %f11, %f12;
+	add.f32 	%f14, %f13, %f13;
+	mov.f32 	%f15, %f14;
+	.loc	16	9561	0
+	ld.param.s32 	%r11, [__cudaparm__Z10mandelbrotP6uchar4jjii_time];
+	cvt.rn.f32.s32 	%f16, %r11;
+	mov.f32 	%f17, 0f447a0000;    	// 1000
+	div.full.f32 	%f18, %f16, %f17;
+	mov.f32 	%f19, %f18;
+	.loc	16	9511	0
+	abs.f32 	%f20, %f18;
+	mov.f32 	%f21, 0f7f800000;    	// ((1.0F)/(0.0F))
+	setp.eq.f32 	%p1, %f20, %f21;
+	@!%p1 bra 	$Lt_0_24578;
+	.loc	16	9512	0
+	mov.f32 	%f22, 0f00000000;    	// 0
+	mul.rn.f32 	%f19, %f18, %f22;
+$Lt_0_24578:
+	.loc	16	9280	0
+	mov.f32 	%f23, 0f3f22f983;    	// 0.63662
+	mul.f32 	%f24, %f19, %f23;
+	cvt.rni.s32.f32 	%r12, %f24;
+	mov.s32 	%r13, %r12;
+	.loc	16	8936	0
+	cvt.rn.f32.s32 	%f25, %r12;
+	neg.f32 	%f26, %f25;
+	mov.f32 	%f27, %f26;
+	mov.f32 	%f28, 0f3fc90000;    	// 1.57031
+	mov.f32 	%f29, %f28;
+	mov.f32 	%f30, %f19;
+	mad.f32 %f31, %f27, %f29, %f30;
+	mov.f32 	%f32, %f31;
+	mov.f32 	%f33, %f26;
+	mov.f32 	%f34, 0f39fd8000;    	// 0.000483513
+	mov.f32 	%f35, %f34;
+	mov.f32 	%f36, %f32;
+	mad.f32 %f37, %f33, %f35, %f36;
+	mov.f32 	%f38, %f37;
+	mov.f32 	%f39, %f26;
+	mov.f32 	%f40, 0f34a88000;    	// 3.13856e-07
+	mov.f32 	%f41, %f40;
+	mov.f32 	%f42, %f38;
+	mad.f32 %f43, %f39, %f41, %f42;
+	mov.f32 	%f44, %f43;
+	mov.f32 	%f45, %f26;
+	mov.f32 	%f46, 0f2e85a309;    	// 6.0771e-11
+	mov.f32 	%f47, %f46;
+	mov.f32 	%f48, %f44;
+	mad.f32 %f49, %f45, %f47, %f48;
+	mov.f32 	%f50, %f49;
+	.loc	16	9291	0
+	mov.f32 	%f51, %f50;
+	abs.f32 	%f52, %f19;
+	mov.f32 	%f53, 0f473ba700;    	// 48039
+	setp.gt.f32 	%p2, %f52, %f53;
+	@!%p2 bra 	$Lt_0_25090;
+	.loc	16	9294	0
+	mov.u32 	%r14, __cudart_i2opi_f;
+	.loc	16	9215	0
+	mov.b32 	%r15, %f19;
+	and.b32 	%r16, %r15, -2147483648;
+	mov.s32 	%r17, %r16;
+	.loc	16	24	0
+	mov.s32 	%r18, %r14;
+	add.u32 	%r19, %r14, 24;
+	mov.u32 	%r20, __cuda___cuda_result_1620;
+	shl.b32 	%r21, %r15, 8;
+	or.b32 	%r22, %r21, -2147483648;
+	mov.u32 	%r23, 0;
+$Lt_0_26114:
+ //<loop> Loop body line 24, nesting depth: 1, iterations: 6
+	.loc	16	9187	0
+	ld.const.u32 	%r24, [%r18+0];
+	mov.u32 	%r25, %r24;
+	mov.u32 	%r26, %r22;
+	mov.u32 	%r27, %r23;
+	{
+	.reg .u64 tmp;
+	mul.wide.u32 tmp, %r25, %r26;
+	mov.b64         {%r28,%r29}, tmp;
+	add.cc.u32      %r28, %r28, %r27;
+	addc.u32        %r29, %r29, 0;
+	}
+	mov.s32 	%r30, %r28;
+	mov.s32 	%r31, %r29;
+	.loc	16	9229	0
+	mov.s32 	%r23, %r31;
+	.loc	16	9230	0
+	st.local.u32 	[%r20+0], %r30;
+	add.u32 	%r20, %r20, 4;
+	add.u32 	%r18, %r18, 4;
+	setp.ne.u32 	%p3, %r18, %r19;
+	@%p3 bra 	$Lt_0_26114;
+	.loc	16	9232	0
+	st.local.u32 	[__cuda___cuda_result_1620+24], %r31;
+	.loc	16	9237	0
+	shl.b32 	%r32, %r15, 1;
+	shr.u32 	%r33, %r32, 24;
+	sub.u32 	%r34, %r33, 128;
+	shr.u32 	%r35, %r34, 5;
+	mov.s32 	%r36, 4;
+	sub.s32 	%r37, %r36, %r35;
+	mul.lo.u32 	%r38, %r37, 4;
+	mov.u32 	%r39, __cuda___cuda_result_1620;
+	add.u32 	%r40, %r38, %r39;
+	ld.local.u32 	%r23, [%r40+8];
+	.loc	16	9238	0
+	ld.local.u32 	%r41, [%r40+4];
+	and.b32 	%r42, %r34, 31;
+	mov.u32 	%r43, 0;
+	setp.eq.u32 	%p4, %r42, %r43;
+	@%p4 bra 	$Lt_0_26626;
+	.loc	16	9241	0
+	mov.s32 	%r44, 32;
+	sub.s32 	%r45, %r44, %r42;
+	shr.u32 	%r46, %r41, %r45;
+	shl.b32 	%r47, %r23, %r42;
+	add.u32 	%r23, %r46, %r47;
+	.loc	16	9242	0
+	ld.local.u32 	%r48, [%r40+0];
+	shr.u32 	%r49, %r48, %r45;
+	shl.b32 	%r50, %r41, %r42;
+	add.u32 	%r41, %r49, %r50;
+$Lt_0_26626:
+	.loc	16	9244	0
+	shr.u32 	%r51, %r23, 30;
+	.loc	16	9246	0
+	shr.u32 	%r52, %r41, 30;
+	shl.b32 	%r53, %r23, 2;
+	add.u32 	%r23, %r52, %r53;
+	.loc	16	9247	0
+	shl.b32 	%r41, %r41, 2;
+	.loc	16	9249	0
+	shr.u32 	%r54, %r23, 31;
+	add.u32 	%r55, %r51, %r54;
+	.loc	16	9244	0
+	neg.s32 	%r56, %r55;
+	mov.u32 	%r57, 0;
+	setp.ne.u32 	%p5, %r16, %r57;
+	selp.s32 	%r58, %r56, %r55, %p5;
+	.loc	16	9251	0
+	mov.s32 	%r13, %r58;
+	mov.u32 	%r59, 0;
+	setp.eq.u32 	%p6, %r54, %r59;
+	@%p6 bra 	$Lt_0_27138;
+	.loc	16	9255	0
+	neg.s32 	%r41, %r41;
+	.loc	16	9257	0
+	mov.u32 	%r60, 0;
+	set.eq.u32.u32 	%r61, %r41, %r60;
+	neg.s32 	%r62, %r61;
+	not.b32 	%r63, %r23;
+	add.u32 	%r23, %r62, %r63;
+	.loc	16	9258	0
+	xor.b32 	%r17, %r16, -2147483648;
+$Lt_0_27138:
+	.loc	16	9261	0
+	mov.u32 	%r64, 0;
+	setp.eq.s32 	%p7, %r23, %r64;
+	@%p7 bra 	$Lt_0_27906;
+	.loc	18	6283	0
+	cvt.rz.f32.u32 	%f54, %r23;
+	mov.b32 	%r65, %f54;
+	shr.s32 	%r66, %r65, 23;
+	mov.s32 	%r67, 158;
+	sub.s32 	%r68, %r67, %r66;
+	bra.uni 	$Lt_0_27650;
+$Lt_0_27906:
+	mov.s32 	%r68, 32;
+$Lt_0_27650:
+	.loc	16	9261	0
+	mov.s32 	%r69, %r68;
+	mov.s32 	%r70, %r69;
+	.loc	18	6283	0
+	mov.s32 	%r71, 32;
+	sub.s32 	%r72, %r71, %r69;
+	shr.u32 	%r73, %r41, %r72;
+	shl.b32 	%r74, %r23, %r69;
+	add.u32 	%r75, %r73, %r74;
+	mov.u32 	%r76, 0;
+	setp.ne.u32 	%p8, %r69, %r76;
+	selp.u32 	%r77, %r75, %r23, %p8;
+	.loc	16	9265	0
+	mul.lo.u32 	%r41, %r77, -921707870;
+	.loc	16	9266	0
+	mov.u32 	%r78, -921707870;
+	mul.hi.u32 	%r23, %r77, %r78;
+	mov.u32 	%r79, 0;
+	setp.le.s32 	%p9, %r23, %r79;
+	@%p9 bra 	$Lt_0_28162;
+	.loc	16	9268	0
+	shr.u32 	%r80, %r41, 31;
+	shl.b32 	%r81, %r23, 1;
+	add.u32 	%r23, %r80, %r81;
+	.loc	16	9269	0
+	add.u32 	%r70, %r69, 1;
+$Lt_0_28162:
+	.loc	16	9294	0
+	add.u32 	%r82, %r23, 1;
+	shr.u32 	%r83, %r82, 7;
+	add.u32 	%r84, %r83, 1;
+	shr.u32 	%r85, %r84, 1;
+	mov.s32 	%r86, 126;
+	sub.s32 	%r87, %r86, %r70;
+	shl.b32 	%r88, %r87, 23;
+	add.u32 	%r89, %r85, %r88;
+	or.b32 	%r90, %r17, %r89;
+	mov.b32 	%f51, %r90;
+$Lt_0_25090:
+	.loc	16	9459	0
+	mov.u32 	%r14, __cudart_i2opi_f;
+	.loc	16	8936	0
+	mul.f32 	%f55, %f51, %f51;
+	mov.f32 	%f56, 0f37ccf5ce;    	// 2.44332e-05
+	mov.f32 	%f57, %f56;
+	mov.f32 	%f58, %f55;
+	mov.f32 	%f59, 0fbab6061a;    	// -0.00138873
+	mov.f32 	%f60, %f59;
+	mad.f32 %f61, %f57, %f58, %f60;
+	mov.f32 	%f62, %f61;
+	mov.f32 	%f63, %f62;
+	mov.f32 	%f64, %f55;
+	mov.f32 	%f65, 0f3d2aaaa5;    	// 0.0416666
+	mov.f32 	%f66, %f65;
+	mad.f32 %f67, %f63, %f64, %f66;
+	mov.f32 	%f68, %f67;
+	mov.f32 	%f69, %f68;
+	mov.f32 	%f70, %f55;
+	mov.f32 	%f71, 0fbf000000;    	// -0.5
+	mov.f32 	%f72, %f71;
+	mad.f32 %f73, %f69, %f70, %f72;
+	mov.f32 	%f74, %f73;
+	mov.f32 	%f75, %f74;
+	mov.f32 	%f76, %f55;
+	mov.f32 	%f77, 0f3f800000;    	// 1
+	mov.f32 	%f78, %f77;
+	mad.f32 %f79, %f75, %f76, %f78;
+	mov.f32 	%f80, %f79;
+	.loc	16	9515	0
+	mov.f32 	%f81, %f80;
+	.loc	16	8936	0
+	mov.f32 	%f82, 0fb94ca1f9;    	// -0.000195153
+	mov.f32 	%f83, %f82;
+	mov.f32 	%f84, %f55;
+	mov.f32 	%f85, 0f3c08839e;    	// 0.00833216
+	mov.f32 	%f86, %f85;
+	mad.f32 %f87, %f83, %f84, %f86;
+	mov.f32 	%f88, %f87;
+	mov.f32 	%f89, %f88;
+	mov.f32 	%f90, %f55;
+	mov.f32 	%f91, 0fbe2aaaa3;    	// -0.166667
+	mov.f32 	%f92, %f91;
+	mad.f32 %f93, %f89, %f90, %f92;
+	mov.f32 	%f94, %f93;
+	mul.f32 	%f95, %f55, %f94;
+	mov.f32 	%f96, %f95;
+	mov.f32 	%f97, %f51;
+	mov.f32 	%f98, %f51;
+	mad.f32 %f99, %f96, %f97, %f98;
+	mov.f32 	%f100, %f99;
+	.loc	16	9516	0
+	mov.f32 	%f101, %f100;
+	.loc	16	9517	0
+	mov.f32 	%f102, %f101;
+	and.b32 	%r91, %r13, 1;
+	mov.u32 	%r92, 0;
+	setp.eq.s32 	%p10, %r91, %r92;
+	@%p10 bra 	$Lt_0_28674;
+	.loc	16	9519	0
+	mov.f32 	%f103, %f81;
+	mov.f32 	%f101, %f103;
+	.loc	16	9520	0
+	mov.f32 	%f81, %f102;
+$Lt_0_28674:
+	and.b32 	%r93, %r13, 2;
+	mov.u32 	%r94, 0;
+	setp.eq.s32 	%p11, %r93, %r94;
+	@%p11 bra 	$Lt_0_29186;
+	.loc	16	9523	0
+	mov.f32 	%f104, %f101;
+	neg.f32 	%f105, %f104;
+	mov.f32 	%f101, %f105;
+$Lt_0_29186:
+	add.s32 	%r95, %r13, 1;
+	and.b32 	%r96, %r95, 2;
+	mov.u32 	%r97, 0;
+	setp.eq.s32 	%p12, %r96, %r97;
+	@%p12 bra 	$Lt_0_29698;
+	.loc	16	9527	0
+	mov.f32 	%f106, %f81;
+	neg.f32 	%f107, %f106;
+	mov.f32 	%f81, %f107;
+$Lt_0_29698:
+	mov.f32 	%f108, 0f00000000;   	// 0
+	setp.eq.f32 	%p13, %f51, %f108;
+	@!%p13 bra 	$Lt_0_30210;
+	.loc	16	9531	0
+	mov.f32 	%f109, 0f00000000;   	// 0
+	mul.rn.f32 	%f110, %f51, %f109;
+	mov.f32 	%f101, %f110;
+$Lt_0_30210:
+	.loc	16	9534	0
+	mov.f32 	%f111, %f101;
+	.loc	16	9535	0
+	mov.f32 	%f112, %f81;
+	.loc	16	9542	0
+	mov.f32 	%f113, %f18;
+	.loc	16	9511	0
+	@!%p1 bra 	$Lt_0_30722;
+	.loc	16	9512	0
+	mov.f32 	%f114, 0f00000000;   	// 0
+	mul.rn.f32 	%f113, %f18, %f114;
+$Lt_0_30722:
+	.loc	16	9280	0
+	mov.f32 	%f115, 0f3f22f983;   	// 0.63662
+	mul.f32 	%f116, %f113, %f115;
+	cvt.rni.s32.f32 	%r98, %f116;
+	mov.s32 	%r99, %r98;
+	.loc	16	8936	0
+	cvt.rn.f32.s32 	%f117, %r98;
+	neg.f32 	%f118, %f117;
+	mov.f32 	%f119, %f118;
+	mov.f32 	%f120, 0f3fc90000;   	// 1.57031
+	mov.f32 	%f121, %f120;
+	mov.f32 	%f122, %f113;
+	mad.f32 %f123, %f119, %f121, %f122;
+	mov.f32 	%f124, %f123;
+	mov.f32 	%f125, %f118;
+	mov.f32 	%f126, 0f39fd8000;   	// 0.000483513
+	mov.f32 	%f127, %f126;
+	mov.f32 	%f128, %f124;
+	mad.f32 %f129, %f125, %f127, %f128;
+	mov.f32 	%f130, %f129;
+	mov.f32 	%f131, %f118;
+	mov.f32 	%f132, 0f34a88000;   	// 3.13856e-07
+	mov.f32 	%f133, %f132;
+	mov.f32 	%f134, %f130;
+	mad.f32 %f135, %f131, %f133, %f134;
+	mov.f32 	%f136, %f135;
+	mov.f32 	%f137, %f118;
+	mov.f32 	%f138, 0f2e85a309;   	// 6.0771e-11
+	mov.f32 	%f139, %f138;
+	mov.f32 	%f140, %f136;
+	mad.f32 %f141, %f137, %f139, %f140;
+	mov.f32 	%f142, %f141;
+	.loc	16	9291	0
+	mov.f32 	%f143, %f142;
+	abs.f32 	%f144, %f113;
+	mov.f32 	%f145, 0f473ba700;   	// 48039
+	setp.gt.f32 	%p14, %f144, %f145;
+	@!%p14 bra 	$Lt_0_31234;
+	.loc	16	9215	0
+	mov.b32 	%r100, %f113;
+	and.b32 	%r101, %r100, -2147483648;
+	mov.s32 	%r102, %r101;
+	.loc	16	24	0
+	mov.s32 	%r103, %r14;
+	add.u32 	%r19, %r14, 24;
+	mov.u32 	%r104, __cuda___cuda_result_5248;
+	shl.b32 	%r105, %r100, 8;
+	or.b32 	%r106, %r105, -2147483648;
+	mov.u32 	%r107, 0;
+$Lt_0_32258:
+ //<loop> Loop body line 24, nesting depth: 1, iterations: 6
+	.loc	16	9187	0
+	ld.const.u32 	%r108, [%r103+0];
+	mov.u32 	%r109, %r108;
+	mov.u32 	%r110, %r106;
+	mov.u32 	%r111, %r107;
+	{
+	.reg .u64 tmp;
+	mul.wide.u32 tmp, %r109, %r110;
+	mov.b64         {%r112,%r113}, tmp;
+	add.cc.u32      %r112, %r112, %r111;
+	addc.u32        %r113, %r113, 0;
+	}
+	mov.s32 	%r114, %r112;
+	mov.s32 	%r115, %r113;
+	.loc	16	9229	0
+	mov.s32 	%r107, %r115;
+	.loc	16	9230	0
+	st.local.u32 	[%r104+0], %r114;
+	add.u32 	%r104, %r104, 4;
+	add.u32 	%r103, %r103, 4;
+	setp.ne.u32 	%p15, %r103, %r19;
+	@%p15 bra 	$Lt_0_32258;
+	.loc	16	9232	0
+	st.local.u32 	[__cuda___cuda_result_5248+24], %r115;
+	.loc	16	9237	0
+	shl.b32 	%r116, %r100, 1;
+	shr.u32 	%r117, %r116, 24;
+	sub.u32 	%r118, %r117, 128;
+	shr.u32 	%r119, %r118, 5;
+	mov.s32 	%r120, 4;
+	sub.s32 	%r121, %r120, %r119;
+	mul.lo.u32 	%r122, %r121, 4;
+	mov.u32 	%r123, __cuda___cuda_result_5248;
+	add.u32 	%r124, %r122, %r123;
+	ld.local.u32 	%r107, [%r124+8];
+	.loc	16	9238	0
+	ld.local.u32 	%r125, [%r124+4];
+	and.b32 	%r126, %r118, 31;
+	mov.u32 	%r127, 0;
+	setp.eq.u32 	%p16, %r126, %r127;
+	@%p16 bra 	$Lt_0_32770;
+	.loc	16	9241	0
+	mov.s32 	%r128, 32;
+	sub.s32 	%r129, %r128, %r126;
+	shr.u32 	%r130, %r125, %r129;
+	shl.b32 	%r131, %r107, %r126;
+	add.u32 	%r107, %r130, %r131;
+	.loc	16	9242	0
+	ld.local.u32 	%r132, [%r124+0];
+	shr.u32 	%r133, %r132, %r129;
+	shl.b32 	%r134, %r125, %r126;
+	add.u32 	%r125, %r133, %r134;
+$Lt_0_32770:
+	.loc	16	9244	0
+	shr.u32 	%r135, %r107, 30;
+	.loc	16	9246	0
+	shr.u32 	%r136, %r125, 30;
+	shl.b32 	%r137, %r107, 2;
+	add.u32 	%r107, %r136, %r137;
+	.loc	16	9247	0
+	shl.b32 	%r125, %r125, 2;
+	.loc	16	9249	0
+	shr.u32 	%r138, %r107, 31;
+	add.u32 	%r139, %r135, %r138;
+	.loc	16	9244	0
+	neg.s32 	%r140, %r139;
+	mov.u32 	%r141, 0;
+	setp.ne.u32 	%p17, %r101, %r141;
+	selp.s32 	%r142, %r140, %r139, %p17;
+	.loc	16	9251	0
+	mov.s32 	%r99, %r142;
+	mov.u32 	%r143, 0;
+	setp.eq.u32 	%p18, %r138, %r143;
+	@%p18 bra 	$Lt_0_33282;
+	.loc	16	9255	0
+	neg.s32 	%r125, %r125;
+	.loc	16	9257	0
+	mov.u32 	%r144, 0;
+	set.eq.u32.u32 	%r145, %r125, %r144;
+	neg.s32 	%r146, %r145;
+	not.b32 	%r147, %r107;
+	add.u32 	%r107, %r146, %r147;
+	.loc	16	9258	0
+	xor.b32 	%r102, %r101, -2147483648;
+$Lt_0_33282:
+	.loc	16	9261	0
+	mov.u32 	%r148, 0;
+	setp.eq.s32 	%p19, %r107, %r148;
+	@%p19 bra 	$Lt_0_34050;
+	.loc	18	6283	0
+	cvt.rz.f32.u32 	%f146, %r107;
+	mov.b32 	%r149, %f146;
+	shr.s32 	%r150, %r149, 23;
+	mov.s32 	%r151, 158;
+	sub.s32 	%r152, %r151, %r150;
+	bra.uni 	$Lt_0_33794;
+$Lt_0_34050:
+	mov.s32 	%r152, 32;
+$Lt_0_33794:
+	.loc	16	9261	0
+	mov.s32 	%r153, %r152;
+	mov.s32 	%r154, %r153;
+	.loc	18	6283	0
+	mov.s32 	%r155, 32;
+	sub.s32 	%r156, %r155, %r153;
+	shr.u32 	%r157, %r125, %r156;
+	shl.b32 	%r158, %r107, %r153;
+	add.u32 	%r159, %r157, %r158;
+	mov.u32 	%r160, 0;
+	setp.ne.u32 	%p20, %r153, %r160;
+	selp.u32 	%r161, %r159, %r107, %p20;
+	.loc	16	9265	0
+	mul.lo.u32 	%r125, %r161, -921707870;
+	.loc	16	9266	0
+	mov.u32 	%r162, -921707870;
+	mul.hi.u32 	%r107, %r161, %r162;
+	mov.u32 	%r163, 0;
+	setp.le.s32 	%p21, %r107, %r163;
+	@%p21 bra 	$Lt_0_34306;
+	.loc	16	9268	0
+	shr.u32 	%r164, %r125, 31;
+	shl.b32 	%r165, %r107, 1;
+	add.u32 	%r107, %r164, %r165;
+	.loc	16	9269	0
+	add.u32 	%r154, %r153, 1;
+$Lt_0_34306:
+	.loc	16	9294	0
+	add.u32 	%r166, %r107, 1;
+	shr.u32 	%r167, %r166, 7;
+	add.u32 	%r168, %r167, 1;
+	shr.u32 	%r169, %r168, 1;
+	mov.s32 	%r170, 126;
+	sub.s32 	%r171, %r170, %r154;
+	shl.b32 	%r172, %r171, 23;
+	add.u32 	%r173, %r169, %r172;
+	or.b32 	%r174, %r102, %r173;
+	mov.b32 	%f143, %r174;
+$Lt_0_31234:
+	.loc	16	8936	0
+	mul.f32 	%f147, %f143, %f143;
+	mov.f32 	%f148, 0f37ccf5ce;   	// 2.44332e-05
+	mov.f32 	%f149, %f148;
+	mov.f32 	%f150, %f147;
+	mov.f32 	%f151, 0fbab6061a;   	// -0.00138873
+	mov.f32 	%f152, %f151;
+	mad.f32 %f153, %f149, %f150, %f152;
+	mov.f32 	%f154, %f153;
+	mov.f32 	%f155, %f154;
+	mov.f32 	%f156, %f147;
+	mov.f32 	%f157, 0f3d2aaaa5;   	// 0.0416666
+	mov.f32 	%f158, %f157;
+	mad.f32 %f159, %f155, %f156, %f158;
+	mov.f32 	%f160, %f159;
+	mov.f32 	%f161, %f160;
+	mov.f32 	%f162, %f147;
+	mov.f32 	%f163, 0fbf000000;   	// -0.5
+	mov.f32 	%f164, %f163;
+	mad.f32 %f165, %f161, %f162, %f164;
+	mov.f32 	%f166, %f165;
+	mov.f32 	%f167, %f166;
+	mov.f32 	%f168, %f147;
+	mov.f32 	%f169, 0f3f800000;   	// 1
+	mov.f32 	%f170, %f169;
+	mad.f32 %f171, %f167, %f168, %f170;
+	mov.f32 	%f172, %f171;
+	.loc	16	9515	0
+	mov.f32 	%f173, %f172;
+	.loc	16	8936	0
+	mov.f32 	%f174, 0fb94ca1f9;   	// -0.000195153
+	mov.f32 	%f175, %f174;
+	mov.f32 	%f176, %f147;
+	mov.f32 	%f177, 0f3c08839e;   	// 0.00833216
+	mov.f32 	%f178, %f177;
+	mad.f32 %f179, %f175, %f176, %f178;
+	mov.f32 	%f180, %f179;
+	mov.f32 	%f181, %f180;
+	mov.f32 	%f182, %f147;
+	mov.f32 	%f183, 0fbe2aaaa3;   	// -0.166667
+	mov.f32 	%f184, %f183;
+	mad.f32 %f185, %f181, %f182, %f184;
+	mov.f32 	%f186, %f185;
+	mul.f32 	%f187, %f147, %f186;
+	mov.f32 	%f188, %f187;
+	mov.f32 	%f189, %f143;
+	mov.f32 	%f190, %f143;
+	mad.f32 %f191, %f188, %f189, %f190;
+	mov.f32 	%f192, %f191;
+	.loc	16	9516	0
+	mov.f32 	%f193, %f192;
+	.loc	16	9517	0
+	mov.f32 	%f194, %f193;
+	and.b32 	%r175, %r99, 1;
+	mov.u32 	%r176, 0;
+	setp.eq.s32 	%p22, %r175, %r176;
+	@%p22 bra 	$Lt_0_34818;
+	.loc	16	9519	0
+	mov.f32 	%f195, %f173;
+	mov.f32 	%f193, %f195;
+	.loc	16	9520	0
+	mov.f32 	%f173, %f194;
+$Lt_0_34818:
+	and.b32 	%r177, %r99, 2;
+	mov.u32 	%r178, 0;
+	setp.eq.s32 	%p23, %r177, %r178;
+	@%p23 bra 	$Lt_0_35330;
+	.loc	16	9523	0
+	mov.f32 	%f196, %f193;
+	neg.f32 	%f197, %f196;
+	mov.f32 	%f193, %f197;
+$Lt_0_35330:
+	add.s32 	%r179, %r99, 1;
+	and.b32 	%r180, %r179, 2;
+	mov.u32 	%r181, 0;
+	setp.eq.s32 	%p24, %r180, %r181;
+	@%p24 bra 	$Lt_0_35842;
+	.loc	16	9527	0
+	mov.f32 	%f198, %f173;
+	neg.f32 	%f199, %f198;
+	mov.f32 	%f173, %f199;
+$Lt_0_35842:
+	mov.f32 	%f200, 0f00000000;   	// 0
+	setp.eq.f32 	%p25, %f143, %f200;
+	@!%p25 bra 	$Lt_0_36354;
+	.loc	16	9531	0
+	mov.f32 	%f201, 0f00000000;   	// 0
+	mul.rn.f32 	%f202, %f143, %f201;
+	mov.f32 	%f193, %f202;
+$Lt_0_36354:
+	.loc	16	9534	0
+	mov.f32 	%f203, %f193;
+	.loc	16	9535	0
+	mov.f32 	%f204, %f173;
+	.loc	14	22	0
+	ld.param.s32 	%r182, [__cudaparm__Z10mandelbrotP6uchar4jjii_iter];
+	mov.u32 	%r183, 0;
+	setp.le.s32 	%p26, %r182, %r183;
+	@%p26 bra 	$Lt_0_38914;
+	ld.param.s32 	%r182, [__cudaparm__Z10mandelbrotP6uchar4jjii_iter];
+	mov.s32 	%r184, %r182;
+	mul.f32 	%f205, %f7, %f112;
+	mul.f32 	%f206, %f14, %f203;
+	mov.s32 	%r185, 0;
+	mov.f32 	%f207, 0f00000000;   	// 0
+	mov.f32 	%f208, 0f00000000;   	// 0
+	mov.s32 	%r186, %r184;
+$Lt_0_37378:
+ //<loop> Loop body line 22, nesting depth: 1, estimated iterations: unknown
+	.loc	14	24	0
+	mul.f32 	%f209, %f15, %f15;
+	mul.f32 	%f210, %f8, %f8;
+	sub.f32 	%f211, %f210, %f209;
+	add.f32 	%f212, %f205, %f211;
+	add.f32 	%f208, %f208, %f212;
+	.loc	14	25	0
+	mul.f32 	%f213, %f8, %f15;
+	mad.f32 	%f214, %f8, %f15, %f213;
+	add.f32 	%f215, %f206, %f214;
+	add.f32 	%f207, %f207, %f215;
+	.loc	14	26	0
+	mul.f32 	%f216, %f207, %f207;
+	mad.f32 	%f217, %f208, %f208, %f216;
+	mov.f32 	%f218, 0f40800000;   	// 4
+	setp.gt.f32 	%p27, %f217, %f218;
+	@%p27 bra 	$Lt_0_36866;
+	.loc	14	27	0
+	mov.f32 	%f8, %f208;
+	.loc	14	28	0
+	mov.f32 	%f15, %f207;
+	.loc	14	23	0
+	add.s32 	%r185, %r185, 1;
+	.loc	14	22	0
+	ld.param.s32 	%r182, [__cudaparm__Z10mandelbrotP6uchar4jjii_iter];
+	.loc	14	23	0
+	setp.ne.s32 	%p28, %r182, %r185;
+	@%p28 bra 	$Lt_0_37378;
+	bra.uni 	$Lt_0_36866;
+$Lt_0_38914:
+	mov.s32 	%r185, 0;
+$Lt_0_36866:
+$Lt_0_258:
+	.loc	14	22	0
+	ld.param.s32 	%r182, [__cudaparm__Z10mandelbrotP6uchar4jjii_iter];
+	.loc	14	33	0
+	setp.ne.s32 	%p29, %r182, %r185;
+	cvt.rn.f32.s32 	%f219, %r185;
+	cvt.rn.f32.s32 	%f220, %r182;
+	cvt.u32.u16 	%r187, %nctaid.x;
+	cvt.rn.f32.u32 	%f221, %r187;
+	cvt.rn.f32.u32 	%f222, %r1;
+	mov.f32 	%f223, 0f437f0000;   	// 255
+	mul.f32 	%f224, %f219, %f223;
+	mov.f32 	%f225, 0f00000000;   	// 0
+	selp.f32 	%f226, %f224, %f225, %p29;
+	mul.f32 	%f227, %f222, %f10;
+	div.full.f32 	%f228, %f226, %f220;
+	mad.f32 	%f229, %f221, %f227, %f2;
+	cvt.rzi.u32.f32 	%r188, %f228;
+	cvt.rzi.s32.f32 	%r189, %f229;
+	cvt.u8.u32 	%r190, %r188;
+	mul.lo.u32 	%r191, %r189, 4;
+	mul24.lo.s32 	%r192, %r190, 3;
+	ld.param.u32 	%r193, [__cudaparm__Z10mandelbrotP6uchar4jjii_ptr];
+	add.u32 	%r194, %r193, %r191;
+	shr.s32 	%r195, %r192, 31;
+	mov.s32 	%r196, 1;
+	and.b32 	%r197, %r195, %r196;
+	add.s32 	%r198, %r197, %r192;
+	shr.s32 	%r199, %r198, 1;
+	mov.s32 	%r200, 255;
+	min.s32 	%r201, %r199, %r200;
+	st.global.u8 	[%r194+0], %r201;
+	mov.u32 	%r202, 100;
+	setp.le.u32 	%p30, %r190, %r202;
+	@%p30 bra 	$Lt_0_38146;
+	.loc	14	34	0
+	sub.s32 	%r203, %r192, 300;
+	mov.s32 	%r204, 255;
+	min.s32 	%r205, %r203, %r204;
+	bra.uni 	$Lt_0_37890;
+$Lt_0_38146:
+	mov.u32 	%r205, 0;
+$Lt_0_37890:
+	st.global.u8 	[%r194+1], %r205;
+	cvt.s8.s32 	%r206, %r190;
+	mov.u32 	%r207, 0;
+	setp.ge.s32 	%p31, %r206, %r207;
+	@%p31 bra 	$Lt_0_38658;
+	.loc	14	35	0
+	mul24.lo.s32 	%r208, %r190, 2;
+	sub.s32 	%r209, %r208, 254;
+	mov.s32 	%r210, 255;
+	min.s32 	%r211, %r209, %r210;
+	bra.uni 	$Lt_0_38402;
+$Lt_0_38658:
+	mov.u32 	%r211, 0;
+$Lt_0_38402:
+	.loc	14	36	0
+	mov.u32 	%r212, 255;
+	st.global.v2.u8 	[%r194+2], {%r211,%r212};
+	.loc	14	37	0
+	exit;
+$LDWend__Z10mandelbrotP6uchar4jjii:
+	} // _Z10mandelbrotP6uchar4jjii
+

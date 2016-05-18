@@ -1,0 +1,4 @@
+
+
+make -f Tests.mak
+

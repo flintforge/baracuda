@@ -1,0 +1,63 @@
+#ifndef _vecmath_h_
+#define _vecmath_h_
+#define _gpu_ __device__
+
+/** vectors **/
+
+#define _float2 make_float2
+#define _float3 make_float3
+#define _float4 make_float4
+
+#define vec2(x,y) _float2(x,y)
+#define vec3(x,y,z) _float3(x,y,z)
+typedef float2 vec2;
+
+
+_gpu_ float2 operator + (float2 u, float2 v) {
+    return vec2(u.x+v.x, u.y+v.y);
+}
+
+
+
+/*
+ *
+
+typedef struct vec2 vec2;
+
+struct vec2 {
+    float2 V = _float2(0,0);
+    float &x=V.x;
+    float &y=V.y;
+    //float2 &xy=V;
+    void* xy = _xy;
+    _gpu_ float2 _xy() { return V; }
+    //float2 &yx = _float2(V.y,V.x);
+    _gpu_ vec2(float _x=0, float _y=0) { V.x=_x; V.y=_y; }
+    _gpu_ vec2(float2 _V) { V=_V; }
+    _gpu_ vec2 operator + (float2 f) { return vec2(x+f.x, y+f.y);}
+    _gpu_ float2 operator + (vec2 v) {
+        return _float2(V.x+v.x, u.y+v.y);
+    }
+};
+*/
+
+
+
+
+
+#endif
+
+/*
+struct Vertex {
+    Vertex():
+        r(values[0]),
+        g(values[1]),
+        b(values[2]),
+        x(values[0]),
+        y(values[1]),
+        z(values[2]) {}
+
+    float& r; float& g; float& b;
+    float& x; float& y; float& z;
+private: float values[3]; };
+*/
