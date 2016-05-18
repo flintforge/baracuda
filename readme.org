@@ -25,6 +25,8 @@ note that if you =qmake -project=, this will overwrite =baracuda.pro=
 
 ** cuda setup
 
+Check the hardware
+
 =lspci -v | grep -i nvidia=
 
 If your card is registred as a 3D controller,
@@ -39,12 +41,11 @@ Bumblebee project page : https://wiki.archlinux.org/index.php/bumblebee
 
 For a fresh start on debian :
 
-purge anything related to nvidia and cuda
-: apt-get purge nvidia-* cuda-*
+purge anything related to nvidia and cuda : 
+=apt-get purge nvidia-* cuda-*=
 
 install nvidia-driver through the jessie backport
-
-: sudo apt-get install -t jessie-backports bumblebee-nvidia
+=sudo apt-get install -t jessie-backports bumblebee-nvidia=
 
 Inspect any errors by digging into =/var/log/Xorg.8.log= and =kern.log=
 
