@@ -12,7 +12,7 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -D_BUILDNUM_=55 -DCUDA_DIR=/usr/local/cuda-7.5 -DPATH=/usr/bin/:/usr/local/bin -DNVCCBIN=/usr/local/cuda-7.5/bin/nvcc -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -D_BUILDNUM_=57 -DCUDA_DIR=/usr/local/cuda-7.5 -DPATH=/usr/bin/:/usr/local/bin -DNVCCBIN=/usr/local/cuda-7.5/bin/nvcc -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -m64 -pipe -g -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I. -I/usr/local/cuda-7.5/include -I/usr/local/cuda-7.5/samples/common/inc -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -Ibuild/debug/.moc -Ibuild/debug/.ui
