@@ -44,8 +44,8 @@ For a fresh start on debian :
 purge anything related to nvidia and cuda : 
 =apt-get purge nvidia-* cuda-*=
 
-install nvidia-driver through the jessie backport
-=sudo apt-get install -t jessie-backports bumblebee-nvidia=
+install nvidia-driver through the jessie backport :
+=apt-get install -t jessie-backports bumblebee-nvidia=
 
 Inspect any errors by digging into =/var/log/Xorg.8.log= and =kern.log=
 
@@ -57,9 +57,10 @@ you'll have to install  gcc-4.6 g++-4.6 (or 4.4 with cuda5)
 =`CUDA_ERROR_NO_DEVICE (no CUDA-capable devices were detected)`=
 =cuInit returned 100=
 either you're back to start or you forgot to run baracuda
-with `optirun`
+with =optirun baracuda=
 
-If running the rendering in virtual framebuffer, 
-*libqxcb will crash* when dragging an item from the list to composer.
-For now, the workaround is to add the item when it's clicked
+If running the rendering in a virtual framebuffer and that is the case
+with optirun -- *libqxcb will crash* when dragging an item from the
+list to composer.  For now, the workaround is to add the item when
+it's clicked
 
