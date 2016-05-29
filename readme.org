@@ -1,4 +1,3 @@
-
 * BaraCuda : a CUDA kernel compositor
 /yes, with one C/
 
@@ -8,16 +7,16 @@ rendering result of the combinations in realtime.
 
 [[./screencap.jpg]]
 
+It's written with QT5 and runs with cuda v4 to v7.
 
 ** GLSL sauce
 A GLSL wrapper is included : with a few modifications, 
 a GLSL code will compile. Not all, as the wrapper is fairly incomplete.
 
 Don't expect performances : this does not generate machine code, but
-add extra structures, meant only so that standard functions, swizzles 
-operations and vectors association/composition work.
+add extra structures, for the standard glsl functions, swizzles 
+operations and vectors association/composition to work.
 
-It's written with QT5 and runs with cuda v4 to v7.
 
 ** Build
 =$ qmake && make=
