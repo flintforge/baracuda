@@ -1,0 +1,77 @@
+* BaraCuda : a CUDA kernel compositor
+/yes, with one C/
+
+baracuda is a POC/WIP of a kernel composition utility, meant to break down
+the writing of cuda kernel into smaller pieces and examinate the
+rendering result of the combinations in realtime.
+
+[[./screencap.jpg]]
+
+It's written with QT5 and runs with cuda v4 to v7.
+
+** GLSL sauce
+A GLSL wrapper is included : with a few modifications, 
+a GLSL code will compile. Not all, as the wrapper is fairly incomplete.
+
+Don't expect performances : this does not generate machine code, but
+add extra structures, for the standard glsl functions, swizzles 
+operations and vectors association/composition to work.
+
+
+** Build
+=$ qmake && make=
+note that if you =qmake -project=, this will overwrite =baracuda.pro=
+
+** cuda setup
+
+Check the hardware
+
+=lspci -v | grep -i nvidia=
+
+If your card is registred as a 3D controller,
+you'll need either to run [[https://wiki.archlinux.org/index.php/bumblebee][bumblebee]],
+or to turn the GPU as primary device in your BIOS.
+
+check the number id and go to [[http://us.download.nvidia.com/XFree86/Linux-x86_64/352.55/README/supportedchips.html][supportedchips]]
+
+For debian : https://wiki.debian.org/NvidiaGraphicsDrivers
+
+Bumblebee project page : https://wiki.archlinux.org/index.php/bumblebee
+
+For a fresh start on debian :
+
+purge anything related to nvidia and cuda : 
+=apt-get purge nvidia-* cuda-*=
+
+install nvidia-driver through the jessie backport :
+=apt-get install -t jessie-backports bumblebee-nvidia=
+
+Inspect any errors by digging into =/var/log/Xorg.8.log= and =kern.log=
+
+*** gcc setup
+take note that gcc-4.7 and up aren't supported with cuda6
+you'll have to install  gcc-4.6 g++-4.6 (or 4.4 with cuda5)
+
+*** troubleshoot
+=CUDA_ERROR_NO_DEVICE (no CUDA-capable devices were detected)=
+=cuInit returned 100=
+either you're back to start or you forgot to run baracuda
+with =optirun baracuda=
+
+If running the rendering in a virtual framebuffer and that is the case
+with optirun -- *libqxcb will crash* when dragging an item from the
+list to composer.  For now, the workaround is to add the item when
+it's clicked
+
+=CUDA_ERROR_INVALID_CONTEXT=
+This most frequently indicates that there is no context bound to the current thread. 
+his can also be returned if the context passed to an API call is not a valid handle 
+(such as a context that has had cuCtxDestroy() invoked on it). 
+
+This can happen if you mix different API versions too (i.e. 3010
+context with 3020 API calls). See =cuCtxGetApiVersion()= for more
+details.
+
+
+
+
