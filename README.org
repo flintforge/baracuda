@@ -65,7 +65,7 @@ it's clicked
 
 =CUDA_ERROR_INVALID_CONTEXT=
 This most frequently indicates that there is no context bound to the current thread. 
-his can also be returned if the context passed to an API call is not a valid handle 
+This can also be returned if the context passed to an API call is not a valid handle 
 (such as a context that has had cuCtxDestroy() invoked on it). 
 
 This can happen if you mix different API versions too (i.e. 3010
